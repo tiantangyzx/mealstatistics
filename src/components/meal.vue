@@ -98,7 +98,11 @@
 
           <el-col>
             <span>每日各类菜点单数</span>
-            <div id="chart2" style="height: 300px;width: 600px"></div>
+            <div id="chartdiv" style="height: 300px;width: 100%">
+
+            </div>
+
+
 
           </el-col>
 
@@ -258,6 +262,25 @@ export default {
           endTime: this.daterange[1],
         }
       }).then((response) => {
+        console.log(response)
+      }, (response) => {
+        let tmp1 = {}
+        let tmp2 = {}
+        let tmp3 = {}
+        tmp1.date = 20210627
+        tmp1.meal = "菜品1"
+        tmp1.count = 20
+        tmp2.date = 20210628
+        tmp2.meal = "菜品2"
+        tmp2.count = 30
+        tmp3.date = 20210629
+        tmp3.meal = "菜品3"
+        tmp3.count = 40
+
+        response.data.result[0] = tmp1
+        response.data.result[1] = tmp2
+        response.data.result[2] = tmp3
+
         let obj = {}
         let arr = []
         response.data.result.forEach(function (object) {
@@ -282,7 +305,7 @@ export default {
         } console.log(arr)
         option.dataset.source = arr
         myChart.setOption(option)
-      }, (response) => {
+
         console.log(response)
       });
 
@@ -311,6 +334,40 @@ export default {
         ]
       };
 
+      option && myChart.setOption(option);
+    },
+    creatChart(i,width,data){
+      let chartdiv = document.getElementById('chartdiv');
+      let chartDom = document.createElement("div");
+      chartDom.setAttribute("id","chartdom"+i);
+      chartDom.setAttribute("style","height: 300px;width: "+width);
+      chartdiv.appendChild(chartDom);
+      let chartDomtmp = document.getElementById("chartdom"+i);
+      let myChart = echarts.init(chartDomtmp);
+      let option;
+      option = {
+        legend: {},
+        tooltip: {},
+        dataset: {
+          source: [
+          ]
+        },
+        xAxis: {type: 'category'},
+        yAxis: {},
+        // Declare several bar series, each will be mapped
+        // to a column of dataset.source by default.
+        series: [
+          {type: 'bar'},
+          {type: 'bar'},
+          {type: 'bar'}
+        ]
+      };
+      let arr = [[]];
+      arr[0]=["date",data.time];
+      arr[1]=[data.male1,data.count1];
+      arr[2]=[data.male2,data.count2];
+      arr[3]=[data.male3,data.count3];
+      option.dataset.source = arr;
       option && myChart.setOption(option);
     },
     initCharts3() {
